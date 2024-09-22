@@ -2,7 +2,7 @@
 https://docs.nestjs.com/controllers#controllers
 */
 
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Header, Param } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { createEvents } from 'ics';
 import { Config, Match } from 'src/interfaces';
@@ -26,6 +26,7 @@ export class MatchesController {
   }
 
   @Get(':team.ics')
+  @Header('Content-Type', 'text/calendar')
   async getMatchesIcal(
     @Param('team') teamId = this.configService.get<string>('TEAM_ID'),
   ): Promise<string> {
