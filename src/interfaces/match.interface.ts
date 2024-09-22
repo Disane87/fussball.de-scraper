@@ -3,4 +3,8 @@ export interface Match {
   homeTeam: string;
   awayTeam: string;
   spielfrei: boolean;
+
+  location?: string;
+
+  locationCoords?: [number, number];
 }

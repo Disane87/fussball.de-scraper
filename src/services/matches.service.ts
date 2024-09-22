@@ -4,13 +4,18 @@ import * as cheerio from 'cheerio';
 import { AxiosResponse } from 'axios';
 import { HttpService } from '@nestjs/axios';
 import { DateTime } from 'luxon';
+import { GeocodingService } from './geocoder.service';
 
 @Injectable()
 export class MatchesService {
   private readonly baseUrl =
     'https://www.fussball.de/ajax.team.matchplan/-/mode/PAGE/team-id/';
 
-  constructor(private readonly httpService: HttpService) {}
+  constructor(
+    private readonly httpService: HttpService,
+
+    private readonly geoCoderService: GeocodingService,
+  ) {}
 
   // Fetch matches from the URL
   async getMatchesForTeams(teamId: string): Promise<string | null> {
@@ -35,11 +40,28 @@ export class MatchesService {
     if (!html) {
       return [];
     }
-    return this.parseMatches(html, showSpielfrei);
+
+    const matches = await this.parseMatches(html, showSpielfrei);
+
+    return Promise.all(
+      matches.map(async (match) => {
+        console.log('Fetching location for:', match.location);
+        const locationCoords = await this.geoCoderService.getCoordsFromAddress(
+          match.location,
+        );
+        return {
+          ...match,
+          locationCoords,
+        };
+      }),
+    );
   }
 
   // Parse the HTML to extract match information
-  private parseMatches(html: string, showSpielfrei: boolean): Match[] {
+  private async parseMatches(
+    html: string,
+    showSpielfrei: boolean,
+  ): Promise<Match[]> {
     const $ = cheerio.load(html);
     return $('div.club-matchplan-table tbody tr')
       .toArray()
@@ -81,6 +103,7 @@ export class MatchesService {
               homeTeam: spielfrei ? 'spielfrei' : homeTeam,
               awayTeam: spielfrei ? 'spielfrei' : awayTeam,
               spielfrei,
+              location: homeTeam,
             });
           }
         }

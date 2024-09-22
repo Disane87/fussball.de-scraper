@@ -57,6 +57,9 @@ export class CalendarService {
           organizer: {
             name: match.homeTeam,
           },
+          geo: {},
+          location: match.homeTeam,
+          calName: 'Fußballspiele ⚽',
           categories: ['Fußballspiel'],
           startInputType: 'local', // Zeitzone explizit festlegen
           startOutputType: 'local', // Zeitzone explizit festlegen

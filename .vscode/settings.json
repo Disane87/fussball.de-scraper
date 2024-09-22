@@ -5,5 +5,9 @@
   "[javascript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "debug.javascript.autoAttachFilter": "always"
+  "debug.javascript.autoAttachFilter": "smart",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }

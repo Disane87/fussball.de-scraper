@@ -7,6 +7,7 @@ import { ConfigService } from '@nestjs/config';
 import { createEvents } from 'ics';
 import { Config, Match } from 'src/interfaces';
 import { CalendarService } from 'src/services/calendar.service';
+import { GeocodingService } from 'src/services/geocoder.service';
 import { MatchesService } from 'src/services/matches.service';
 
 @Controller('matches')
@@ -15,12 +16,14 @@ export class MatchesController {
     private readonly matchesService: MatchesService,
     private readonly calendarService: CalendarService,
 
+    private readonly geoService: GeocodingService,
+
     private configService: ConfigService,
   ) {}
 
   @Get(':team.json')
   async getMatchesJson(
-    @Param('team') teamId = this.configService.get<string>('TEAM_ID'),
+    @Param('team') teamId: string = this.configService.get<string>('TEAM_ID'),
   ): Promise<Match[]> {
     return await this.matchesService.matchesForTeam(teamId, true);
   }
@@ -28,17 +31,19 @@ export class MatchesController {
   @Get(':team.ics')
   @Header('Content-Type', 'text/calendar')
   async getMatchesIcal(
-    @Param('team') teamId = this.configService.get<string>('TEAM_ID'),
+    @Param('teamId') teamId: string = this.configService.get<string>('TEAM_ID'),
   ): Promise<string> {
-    
     const config: Config = {
       spieldauer: { hours: 2, minutes: 0 },
       vorlaufzeit: { hours: 1, minutes: 0 },
       spielfreiAnzeigen: true,
     };
-    
+
     const matches = await this.getMatchesJson(teamId);
-    const ical = createEvents(this.calendarService.createIcalEvents(matches, config));
+
+    const ical = createEvents(
+      this.calendarService.createIcalEvents(matches, config),
+    );
     if (!ical.value && ical.error) {
       console.error(ical.error);
       throw new Error(ical.error.message);
