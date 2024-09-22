@@ -1,7 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { lastValueFrom } from 'rxjs';
-import * as NodeGeocoder from 'node-geocoder';
+import node_geocoder from 'node-geocoder';
 import { RequestInfo, RequestInit, Response } from 'node-fetch'; // node-fetch direkt importieren
 
 @Injectable()
@@ -11,7 +11,7 @@ export class GeocodingService {
   public async getCoordsFromAddress(
     address: string,
   ): Promise<[number, number] | null> {
-    const options: NodeGeocoder.Options = {
+    const options: node_geocoder.Options = {
       provider: 'openstreetmap',
       formatter: null, // 'gpx', 'string', etc.
       email: 'your-email@domain.com', // Email for Nominatim's contact information
@@ -48,7 +48,7 @@ export class GeocodingService {
       },
     };
 
-    const geocoder = NodeGeocoder(options);
+    const geocoder = node_geocoder(options);
     const res = await geocoder.geocode(address);
 
     if (res.length === 0) {
