@@ -1,8 +1,12 @@
 {
   "name": "fussball.de-scraper",
   "version": "0.0.1",
-  "description": "",
-  "author": "Marco Franke",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Disane87/fussball.de-scraper"
+  },
+  "description": "Fußball.de Scraper to get all matches from a team",
+  "author": "Marco Franke <mfranke87@icloud.com>",
   "private": true,
   "license": "MIT",
   "scripts": {

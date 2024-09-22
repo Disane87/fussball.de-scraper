@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { lastValueFrom } from 'rxjs';
 import node_geocoder from 'node-geocoder';
 import { RequestInfo, RequestInit, Response } from 'node-fetch'; // node-fetch direkt importieren
+import { author } from '../../package.json';
 
 @Injectable()
 export class GeocodingService {
@@ -14,7 +15,7 @@ export class GeocodingService {
     const options: node_geocoder.Options = {
       provider: 'openstreetmap',
       formatter: null, // 'gpx', 'string', etc.
-      email: 'your-email@domain.com', // Email for Nominatim's contact information
+      email: author, // Email for Nominatim's contact information
       osmServer: 'https://nominatim.openstreetmap.org', // Nominatim default server
       fetch: async (
         url: RequestInfo, // Typ bleibt jetzt konsistent
@@ -24,8 +25,8 @@ export class GeocodingService {
         const requestUrl = url instanceof URL ? url.toString() : url;
 
         const headers = {
-          'user-agent': 'YourAppName <your-email@domain.com>',
-          Referer: 'https://yourdomain.com',
+          'user-agent': author,
+          Referer: process.env.VERCEL_URL,
           ...(init?.headers || {}), // Merge with any existing headers
         };
 
