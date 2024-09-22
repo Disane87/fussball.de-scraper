@@ -3,6 +3,7 @@ import { Match } from '../interfaces';
 import * as cheerio from 'cheerio';
 import { AxiosResponse } from 'axios';
 import { HttpService } from '@nestjs/axios';
+import { DateTime } from 'luxon';
 
 @Injectable()
 export class MatchesService {
@@ -63,13 +64,20 @@ export class MatchesService {
           const dateMatch = shortDateText.match(/(\d{2}\.\d{2}\.\d{2})/);
           const timeMatch = shortDateText.match(/(\d{2}:\d{2})/);
 
-          // Set time to null if not available
-          const time = timeMatch ? timeMatch[1] : null;
+          // Set time to "00:00" if not available
+          const time = timeMatch ? timeMatch[1] : '00:00';
 
           if (dateMatch && (!spielfrei || showSpielfrei)) {
+            // Parse date and time in Europe/Berlin timezone
+            const dateTime = DateTime.fromFormat(
+              `${dateMatch[1]} ${time}`,
+              'dd.MM.yy HH:mm',
+              { zone: 'Europe/Berlin' },
+            );
+
+            // Store the ISO date with timezone
             matches.push({
-              date: dateMatch[1],
-              time, // Time can be null
+              date: dateTime.toISO(), // ISO string with time and timezone
               homeTeam: spielfrei ? 'spielfrei' : homeTeam,
               awayTeam: spielfrei ? 'spielfrei' : awayTeam,
               spielfrei,

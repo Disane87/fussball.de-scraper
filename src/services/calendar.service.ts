@@ -6,6 +6,7 @@ import { Injectable } from '@nestjs/common';
 import { createEvents, EventAttributes } from 'ics';
 import fs from 'fs';
 import { Config, Match } from 'src/interfaces';
+import { DateTime } from 'luxon';
 
 @Injectable()
 export class CalendarService {
@@ -13,31 +14,30 @@ export class CalendarService {
     return matches
       .filter((match) => !match.spielfrei) // Spielfreie Matches herausfiltern
       .map((match) => {
-        const [day, month, year] = match.date.split('.');
+        // ISO-Datum verarbeiten und die Zeit basierend auf der Zeitzone "Europe/Berlin" anpassen
+        const matchDateTime = DateTime.fromISO(match.date, {
+          zone: 'Europe/Berlin',
+        });
 
-        // Wenn die Zeit vorhanden ist, teile sie in Stunde und Minute auf, ansonsten setze Standardwerte
-        const [hour, minute] = match.time
-          ? match.time.split(':')
-          : ['00', '00']; // Standardzeit, falls keine Uhrzeit vorhanden ist
-
-        // Korrigiertes eventStart, das genau 5 Elemente enthält (year, month, day, hour, minute)
-        const eventStart: [number, number, number, number, number] = [
-          parseInt(`20${year}`),
-          parseInt(month),
-          parseInt(day),
-          parseInt(hour) - config.vorlaufzeit.hours,
-          parseInt(minute) - config.vorlaufzeit.minutes,
-        ];
+        // Die Vorlaufzeit abziehen
+        const eventStart = matchDateTime
+          .minus({
+            hours: config.vorlaufzeit.hours,
+            minutes: config.vorlaufzeit.minutes,
+          })
+          .toJSDate(); // Konvertiere zu einem JavaScript Date-Objekt, wenn erforderlich
 
         const title = `${match.homeTeam} vs ${match.awayTeam}`;
         const description = `Fußballspiel: ${match.homeTeam} vs. ${match.awayTeam}`;
 
         return {
-          start: eventStart,
-          duration: config.spieldauer,
+          start: eventStart, // Event-Startzeit als Date-Objekt
+          duration: config.spieldauer, // Dauer des Events basierend auf der Konfiguration
           title,
           description,
           status: 'CONFIRMED',
+          busyStatus: 'BUSY',
+          timezone: 'Europe/Berlin',
         };
       });
   }
