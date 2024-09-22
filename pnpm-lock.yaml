@@ -35,6 +35,9 @@ importers:
       '@sentry/profiling-node':
         specifier: ^8.30.0
         version: 8.30.0
+      '@types/node-geocoder':
+        specifier: ^4.2.6
+        version: 4.2.6
       axios:
         specifier: ^1.7.7
         version: 1.7.7
@@ -47,6 +50,9 @@ importers:
       luxon:
         specifier: ^3.5.0
         version: 3.5.0
+      node-fetch:
+        specifier: ^2.6.11
+        version: 2.6.11
       node-geocoder:
         specifier: ^4.4.0
         version: 4.4.0
@@ -907,6 +913,12 @@ packages:
 
   '@types/mysql@2.15.26':
     resolution: {integrity: sha512-DSLCOXhkvfS5WNNPbfn2KdICAmk8lLc+/PNvnPnF7gOdMZCxopXduqv0OQ13y/yA/zXTSikZZqVgybUxOEg6YQ==}
+
+  '@types/node-fetch@2.6.11':
+    resolution: {integrity: sha512-24xFj9R5+rfQJLRyM56qh+wnVSYhyXC2tkoBndtY0U+vubqNsYXGjufB2nn8Q6gt0LrARwL6UBtMCSVCwl4B1g==}
+
+  '@types/node-geocoder@4.2.6':
+    resolution: {integrity: sha512-rONIqFylsxAeyqCpfy626vs9ofNI8oXjNyBS2KuI+ePbCyLGrcqkVSrhIvuKxfeXtqikGk118EZtjehU0cUH9w==}
 
   '@types/node@20.16.5':
     resolution: {integrity: sha512-VwYCweNo3ERajwy0IUlqqcyZ8/A7Zwa9ZP3MnENWcB11AejO+tLy3pu850goUW2FC/IJMdZUfKpX/yxL1gymCA==}
@@ -2423,8 +2435,8 @@ packages:
   node-emoji@1.11.0:
     resolution: {integrity: sha512-wo2DpQkQp7Sjm2A0cq+sN7EHKO6Sl0ctXeBdFZrL9T9+UywORbufTcTZxom8YqpLQt/FqNMUkOpkZrJVYSKD3A==}
 
-  node-fetch@2.7.0:
-    resolution: {integrity: sha512-c4FRfUm/dbcWZ7U+1Wq0AwCyFL+3nt2bEw05wfxSz+DWpWsitgmSgYmy2dQdWyKC1694ELPqMs/YzUSNozLt8A==}
+  node-fetch@2.6.11:
+    resolution: {integrity: sha512-4I6pdBY1EthSqDmJkiNk3JIT8cswwR9nfeW/cPdUagJYEQG7R95WRH74wpz7ma8Gh/9dI9FP+OU+0E4FvtA55w==}
     engines: {node: 4.x || >=6.0.0}
     peerDependencies:
       encoding: ^0.1.0
@@ -3873,7 +3885,7 @@ snapshots:
     dependencies:
       chalk: 4.1.2
       consola: 2.15.3
-      node-fetch: 2.7.0
+      node-fetch: 2.6.11
     transitivePeerDependencies:
       - encoding
 
@@ -4309,6 +4321,16 @@ snapshots:
   '@types/mysql@2.15.26':
     dependencies:
       '@types/node': 20.16.5
+
+  '@types/node-fetch@2.6.11':
+    dependencies:
+      '@types/node': 20.16.5
+      form-data: 4.0.0
+
+  '@types/node-geocoder@4.2.6':
+    dependencies:
+      '@types/node': 20.16.5
+      '@types/node-fetch': 2.6.11
 
   '@types/node@20.16.5':
     dependencies:
@@ -6129,14 +6151,14 @@ snapshots:
     dependencies:
       lodash: 4.17.21
 
-  node-fetch@2.7.0:
+  node-fetch@2.6.11:
     dependencies:
       whatwg-url: 5.0.0
 
   node-geocoder@4.4.0:
     dependencies:
       bluebird: 3.7.2
-      node-fetch: 2.7.0
+      node-fetch: 2.6.11
     transitivePeerDependencies:
       - encoding
 

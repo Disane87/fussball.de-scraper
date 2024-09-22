@@ -2,6 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { lastValueFrom } from 'rxjs';
 import * as NodeGeocoder from 'node-geocoder';
+import { RequestInfo, RequestInit, Response } from 'node-fetch'; // node-fetch direkt importieren
 
 @Injectable()
 export class GeocodingService {
@@ -10,32 +11,40 @@ export class GeocodingService {
   public async getCoordsFromAddress(
     address: string,
   ): Promise<[number, number] | null> {
-    const options = {
+    const options: NodeGeocoder.Options = {
       provider: 'openstreetmap',
-      formatter: null, // 'gpx', 'string', ...
+      formatter: null, // 'gpx', 'string', etc.
       email: 'your-email@domain.com', // Email for Nominatim's contact information
       osmServer: 'https://nominatim.openstreetmap.org', // Nominatim default server
-      fetch: async (url: string, options: any) => {
+      fetch: async (
+        url: RequestInfo, // Typ bleibt jetzt konsistent
+        init?: RequestInit,
+      ): Promise<Response> => {
+        // Ensure the URL is treated as a string
+        const requestUrl = url instanceof URL ? url.toString() : url;
+
         const headers = {
           'user-agent': 'YourAppName <your-email@domain.com>',
-          Referer: 'https://yourdomain.com', // Optional, use your website if available
-          ...options.headers, // Merge additional headers if present
+          Referer: 'https://yourdomain.com',
+          ...(init?.headers || {}), // Merge with any existing headers
         };
 
         // Use HttpService to fetch the URL and ensure the response is treated as text
         const response = await lastValueFrom(
-          this.httpService.get(url, {
+          this.httpService.get(requestUrl.toString(), {
             headers,
             responseType: 'text', // Ensure the response is returned as plain text
           }),
         );
 
-        if (response.status !== 200) {
-          console.error('Error fetching data:', response.statusText);
-          return { text: () => null }; // Return an empty response
-        }
-
-        return { text: () => response.data }; // Return the raw text response
+        // Map the response to a fetch-like Response object
+        return {
+          ok: response.status === 200,
+          status: response.status,
+          statusText: response.statusText,
+          url: requestUrl,
+          text: async () => response.data, // Must be async to match the Response interface
+        } as Response; // Ensure the return type matches Response
       },
     };
 
@@ -47,6 +56,6 @@ export class GeocodingService {
       return null; // Return an empty response
     }
 
-    return res.map((r) => [r.latitude, r.longitude])[0];
+    return res.length > 0 ? [res[0].latitude, res[0].longitude] : null;
   }
 }

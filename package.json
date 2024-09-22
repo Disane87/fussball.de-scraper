@@ -30,10 +30,12 @@
     "@sentry/nestjs": "^8.30.0",
     "@sentry/node": "^8.30.0",
     "@sentry/profiling-node": "^8.30.0",
+    "@types/node-geocoder": "^4.2.6",
     "axios": "^1.7.7",
     "cheerio": "^1.0.0",
     "ics": "^3.8.0",
     "luxon": "^3.5.0",
+    "node-fetch": "^2.6.11",
     "node-geocoder": "^4.4.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1"
