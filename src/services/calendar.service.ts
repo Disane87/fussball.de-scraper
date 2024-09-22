@@ -47,6 +47,8 @@ export class CalendarService {
         console.log('Title:', title);
         console.log('Total Duration:', totalDuration);
 
+        const [lat, lon] = match.locationCoords;
+
         return {
           start: eventStartArray, // Event-Startzeit als Date-Objekt
           duration: totalDuration, // Dauer des Events basierend auf der Konfiguration
@@ -57,7 +59,10 @@ export class CalendarService {
           organizer: {
             name: match.homeTeam,
           },
-          geo: {},
+          geo: {
+            lat,
+            lon,
+          },
           location: match.homeTeam,
           calName: 'Fußballspiele ⚽',
           categories: ['Fußballspiel'],

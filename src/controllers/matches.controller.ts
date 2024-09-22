@@ -4,12 +4,14 @@ https://docs.nestjs.com/controllers#controllers
 
 import { Controller, Get, Header, Param } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { ApiTags } from '@nestjs/swagger';
 import { createEvents } from 'ics';
 import { Config, Match } from 'src/interfaces';
 import { CalendarService } from 'src/services/calendar.service';
 import { MatchesService } from 'src/services/matches.service';
 
 @Controller('matches')
+@ApiTags('matches')
 export class MatchesController {
   constructor(
     private readonly matchesService: MatchesService,

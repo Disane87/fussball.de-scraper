@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import './instrument';
+import { Logger } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -10,17 +11,17 @@ async function bootstrap() {
   });
 
   const config = new DocumentBuilder()
-    .setTitle('Cats example')
-    .setDescription('The cats API description')
+    .setTitle('Unofficial Fußball.de Matches API')
+    .setDescription('Get matches by team ids from Fußball.de')
     .setVersion('1.0')
-    .addTag('cats')
+    .setLicense('MIT', 'https://opensource.org/licenses/MIT')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('', app, document);
+  SwaggerModule.setup('/', app, document);
 
-  console.log('Starting application');
-  console.log(`Environment: ${process.env.NODE_ENV}`);
+  Logger.log('Starting application', 'Bootstrap');
+  Logger.log(`Environment: ${process.env.NODE_ENV}`, 'Bootstrap');
 
   await app.listen(3000);
 }
