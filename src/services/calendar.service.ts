@@ -3,8 +3,7 @@ https://docs.nestjs.com/providers#services
 */
 
 import { Injectable } from '@nestjs/common';
-import { createEvents, EventAttributes } from 'ics';
-import fs from 'fs';
+import { DurationObject, EventAttributes } from 'ics';
 import { Config, Match } from 'src/interfaces';
 import { DateTime } from 'luxon';
 
@@ -34,15 +33,33 @@ export class CalendarService {
           eventStart.minute,
         ];
 
+        // console.log('Event Start Array:', eventStartArray);
+
         const title = `${match.homeTeam} vs. ${match.awayTeam}`;
         const description = `Fußballspiel: ${match.homeTeam} vs. ${match.awayTeam}`;
 
+        // Gesamtdauer berechnen (Spieldauer + Vorlaufzeit)
+        const totalDuration: DurationObject = {
+          hours: config.spieldauer.hours + config.vorlaufzeit.hours,
+          minutes: config.spieldauer.minutes + config.vorlaufzeit.minutes,
+        };
+
+        console.log('Title:', title);
+        console.log('Total Duration:', totalDuration);
+
         return {
           start: eventStartArray, // Event-Startzeit als Date-Objekt
-          duration: config.spieldauer, // Dauer des Events basierend auf der Konfiguration
+          duration: totalDuration, // Dauer des Events basierend auf der Konfiguration
           title,
           description,
           status: 'CONFIRMED',
+          busyStatus: 'BUSY',
+          organizer: {
+            name: match.homeTeam,
+          },
+          categories: ['Fußballspiel'],
+          startInputType: 'local', // Zeitzone explizit festlegen
+          startOutputType: 'local', // Zeitzone explizit festlegen
         } as EventAttributes;
       });
   }

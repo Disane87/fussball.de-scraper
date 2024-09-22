@@ -30,23 +30,20 @@ export class MatchesController {
   async getMatchesIcal(
     @Param('team') teamId = this.configService.get<string>('TEAM_ID'),
   ): Promise<string> {
-    const matches = await this.getMatchesJson(teamId);
-
+    
     const config: Config = {
       spieldauer: { hours: 2, minutes: 0 },
       vorlaufzeit: { hours: 1, minutes: 0 },
       spielfreiAnzeigen: true,
     };
-    const iCalEvents = this.calendarService.createIcalEvents(matches, config);
-
-    const ical = createEvents(iCalEvents);
-    const icsString = ical.value;
-
-    if (!icsString && ical.error) {
+    
+    const matches = await this.getMatchesJson(teamId);
+    const ical = createEvents(this.calendarService.createIcalEvents(matches, config));
+    if (!ical.value && ical.error) {
       console.error(ical.error);
       throw new Error(ical.error.message);
     }
 
-    return icsString;
+    return ical.value;
   }
 }
