@@ -38,13 +38,15 @@ export class CalendarService {
           minutes: config.spieldauer.minutes + config.vorlaufzeit.minutes,
         };
 
-        console.log('Title:', title);
-        console.log('Total Duration:', totalDuration);
-
         // Überprüfung, ob locationCoords gesetzt sind
         const geo = match.locationCoords
           ? { lat: match.locationCoords[0], lon: match.locationCoords[1] }
           : undefined; // Falls keine Koordinaten vorhanden sind, wird "geo" undefined
+
+        // Dynamische Werte für X-APPLE Felder erstellen
+        // const appleStructuredLocation = `X-APPLE-STRUCTURED-LOCATION;VALUE=URI;X-ADDRESS="${match.location}";X-TITLE="${match.homeTeam}":geo:${match.locationCoords ? match.locationCoords.join(',') : '0,0'}`;
+
+        // const appleTravelStart = `X-APPLE-TRAVEL-START;ROUTING=CAR;VALUE=URI;X-ADDRESS="Rennstraße 33\n41751 Viersen\nDeutschland";X-TITLE="Rennstraße 33":geo:51.248564,6.336578`;
 
         return {
           start: eventStartArray, // Event-Startzeit als Date-Objekt
@@ -57,11 +59,12 @@ export class CalendarService {
             name: match.homeTeam,
           },
           ...(geo && { geo }), // Nur hinzufügen, wenn Geo-Koordinaten verfügbar sind
-          location: match.homeTeam,
+          location: `${match.homeTeam}\n${match.location}`, // Standort im Format "Teamname\nAdresse"
           calName: 'Fußballspiele ⚽',
           categories: ['Fußballspiel'],
           startInputType: 'local', // Zeitzone explizit festlegen
           startOutputType: 'local', // Zeitzone explizit festlegen
+          // extra: `${appleStructuredLocation}\n${appleTravelStart}`, // X-APPLE Felder hinzufügen
         } as EventAttributes;
       });
   }
