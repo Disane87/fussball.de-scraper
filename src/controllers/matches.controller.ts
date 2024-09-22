@@ -38,10 +38,11 @@ export class MatchesController {
     };
 
     const matches = await this.getMatchesJson(teamId);
+    const iCalMatches = this.calendarService.createIcalEvents(matches, config);
 
-    const ical = createEvents(
-      this.calendarService.createIcalEvents(matches, config),
-    );
+    const ical = createEvents(iCalMatches, {
+      calName: 'Fußball.de Matches ⚽',
+    });
     if (!ical.value && ical.error) {
       console.error(ical.error);
       throw new Error(ical.error.message);

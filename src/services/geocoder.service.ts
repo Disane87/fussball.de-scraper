@@ -26,7 +26,7 @@ export class GeocodingService {
 
         const headers = {
           'user-agent': author,
-          Referer: process.env.VERCEL_URL,
+          Referer: process.env.VERCEL_URL || 'http://localhost:3000',
           ...(init?.headers || {}), // Merge with any existing headers
         };
 

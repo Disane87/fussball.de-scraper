@@ -1,7 +1,3 @@
-/*
-https://docs.nestjs.com/providers#services
-*/
-
 import { Injectable } from '@nestjs/common';
 import { DurationObject, EventAttributes } from 'ics';
 import { Config, Match } from 'src/interfaces';
@@ -33,8 +29,6 @@ export class CalendarService {
           eventStart.minute,
         ];
 
-        // console.log('Event Start Array:', eventStartArray);
-
         const title = `${match.homeTeam} vs. ${match.awayTeam}`;
         const description = `Fußballspiel: ${match.homeTeam} vs. ${match.awayTeam}`;
 
@@ -47,7 +41,10 @@ export class CalendarService {
         console.log('Title:', title);
         console.log('Total Duration:', totalDuration);
 
-        const [lat, lon] = match.locationCoords;
+        // Überprüfung, ob locationCoords gesetzt sind
+        const geo = match.locationCoords
+          ? { lat: match.locationCoords[0], lon: match.locationCoords[1] }
+          : undefined; // Falls keine Koordinaten vorhanden sind, wird "geo" undefined
 
         return {
           start: eventStartArray, // Event-Startzeit als Date-Objekt
@@ -59,10 +56,7 @@ export class CalendarService {
           organizer: {
             name: match.homeTeam,
           },
-          geo: {
-            lat,
-            lon,
-          },
+          ...(geo && { geo }), // Nur hinzufügen, wenn Geo-Koordinaten verfügbar sind
           location: match.homeTeam,
           calName: 'Fußballspiele ⚽',
           categories: ['Fußballspiel'],
