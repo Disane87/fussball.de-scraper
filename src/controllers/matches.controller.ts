@@ -29,7 +29,7 @@ export class MatchesController {
   @Get(':team.ics')
   @Header('Content-Type', 'text/calendar')
   async getMatchesIcal(
-    @Param('teamId') teamId: string = this.configService.get<string>('TEAM_ID'),
+    @Param('team') teamId: string = this.configService.get<string>('TEAM_ID'),
   ): Promise<string> {
     const config: Config = {
       spieldauer: { hours: 2, minutes: 0 },
