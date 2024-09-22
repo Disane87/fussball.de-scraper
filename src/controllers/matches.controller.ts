@@ -39,7 +39,13 @@ export class MatchesController {
     };
     const iCalEvents = this.calendarService.createIcalEvents(matches, config);
 
-    const icsString = createEvents(iCalEvents).value;
+    const ical = createEvents(iCalEvents);
+    const icsString = ical.value;
+
+    if (!icsString && ical.error) {
+      console.error(ical.error);
+      throw new Error(ical.error.message);
+    }
 
     return icsString;
   }

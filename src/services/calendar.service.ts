@@ -20,36 +20,30 @@ export class CalendarService {
         });
 
         // Die Vorlaufzeit abziehen
-        const eventStart = matchDateTime
-          .minus({
-            hours: config.vorlaufzeit.hours,
-            minutes: config.vorlaufzeit.minutes,
-          })
-          .toJSDate(); // Konvertiere zu einem JavaScript Date-Objekt, wenn erforderlich
+        const eventStart = matchDateTime.minus({
+          hours: config.vorlaufzeit.hours,
+          minutes: config.vorlaufzeit.minutes,
+        });
 
-        const title = `${match.homeTeam} vs ${match.awayTeam}`;
+        // iCal erwartet das Datum als Array [Jahr, Monat, Tag, Stunde, Minute]
+        const eventStartArray: [number, number, number, number, number] = [
+          eventStart.year,
+          eventStart.month,
+          eventStart.day,
+          eventStart.hour,
+          eventStart.minute,
+        ];
+
+        const title = `${match.homeTeam} vs. ${match.awayTeam}`;
         const description = `Fußballspiel: ${match.homeTeam} vs. ${match.awayTeam}`;
 
         return {
-          start: eventStart, // Event-Startzeit als Date-Objekt
+          start: eventStartArray, // Event-Startzeit als Date-Objekt
           duration: config.spieldauer, // Dauer des Events basierend auf der Konfiguration
           title,
           description,
           status: 'CONFIRMED',
-          busyStatus: 'BUSY',
         } as EventAttributes;
       });
-  }
-
-  // Funktion, um die iCal-Datei zu erstellen
-  saveIcalToFile(events: EventAttributes[], filename: string): void {
-    createEvents(events, (error, value) => {
-      if (error) {
-        console.error('Error creating events:', error);
-        return;
-      }
-      fs.writeFileSync(filename, value!);
-      console.log(`iCal file created: ${filename}`);
-    });
   }
 }
