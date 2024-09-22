@@ -7,7 +7,6 @@ import { ConfigService } from '@nestjs/config';
 import { createEvents } from 'ics';
 import { Config, Match } from 'src/interfaces';
 import { CalendarService } from 'src/services/calendar.service';
-import { GeocodingService } from 'src/services/geocoder.service';
 import { MatchesService } from 'src/services/matches.service';
 
 @Controller('matches')
@@ -15,9 +14,6 @@ export class MatchesController {
   constructor(
     private readonly matchesService: MatchesService,
     private readonly calendarService: CalendarService,
-
-    private readonly geoService: GeocodingService,
-
     private configService: ConfigService,
   ) {}
 

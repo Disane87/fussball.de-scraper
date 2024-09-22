@@ -19,6 +19,9 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('', app, document);
 
+  console.log('Starting application');
+  console.log(`Environment: ${process.env.NODE_ENV}`);
+
   await app.listen(3000);
 }
 bootstrap();

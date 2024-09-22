@@ -8,6 +8,7 @@ Sentry.init({
     // Add our Profiling integration
     nodeProfilingIntegration(),
   ],
+  environment: process.env.NODE_ENV,
 
   // Add Tracing by setting tracesSampleRate
   // We recommend adjusting this value in production
