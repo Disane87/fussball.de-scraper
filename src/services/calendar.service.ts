@@ -37,8 +37,7 @@ export class CalendarService {
           description,
           status: 'CONFIRMED',
           busyStatus: 'BUSY',
-          timezone: 'Europe/Berlin',
-        };
+        } as EventAttributes;
       });
   }
 
