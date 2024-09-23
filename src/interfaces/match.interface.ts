@@ -1,5 +1,5 @@
 export interface Match {
-  date: string;
+  date: Date;
   homeTeam: string;
   awayTeam: string;
   spielfrei: boolean;
